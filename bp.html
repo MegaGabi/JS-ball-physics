@@ -1,0 +1,78 @@
+<html>
+
+	<head>
+		<style>
+			#circle {
+				width: 20px;
+				height: 20px;
+				-webkit-border-radius: 25px;
+				-moz-border-radius: 25px;
+				border-radius: 25px;
+				background: red;
+				position: absolute;
+			}
+		</style>
+	</head>
+	
+	<body>
+	
+	<div id="circle" onclick="p.change_state(this.id)"></div>
+	
+	<script type = "text/javascript">
+		var id = "circle";
+		var refreshIntervalId;
+		
+		var circle = {
+			x:0,
+			y:0,
+			angle:60,
+			impulse:2,
+			isMoving:false,
+			move:function()
+			{
+				var previous_angle = this.angle;  
+				if(this.x < 0 || this.x >  screen.width - 20 || this.y < 0 || this.y >  screen.height - 120)
+				{
+					if(this.angle < 180)
+						this.angle += this.angle + 180;
+					else
+					{
+						this.impulse = this.impulse * (-1);
+						this.angle -= 180;
+					}
+				}
+				
+				while(this.angle >= 360)
+				{
+					this.angle -= 360;
+				}
+				
+				console.log(this.angle);
+				
+				this.x = this.x + this.impulse * Math.cos(this.angle * Math.PI / 180);
+				this.y = this.y + this.impulse * Math.sin(this.angle * Math.PI / 180);
+				document.getElementById(id).style = "left:" + this.x + "; top:" + this.y;
+			},
+			change_state:function(pid)
+			{				
+				this.id = pid;
+				this.isMoving = !(this.isMoving);
+				
+				if(this.isMoving)
+				{
+					var t = this;
+					refreshIntervalId = setInterval(function(){t.move();}, 10);
+				}
+				else
+				{
+					clearInterval(refreshIntervalId);
+				}
+			}
+		}
+		
+		var p = Object.create(circle);
+	</script>
+	
+	</body>
+
+</html>
